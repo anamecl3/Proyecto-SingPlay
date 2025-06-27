@@ -26,7 +26,9 @@ public class Token {
 
 		Map<String, Object> map = new HashMap<>();
 		map.put("nombre", user);
-		
+		map.put("fecha_creacion", new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(fechaCreacion)); // esta es la fecha que aparecerá como texto en el token
+		map.put("fecha_expiracion", new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(expiracionFecha)); // esta es la fecha que aparecerá como texto en el token
+
 		return Jwts.builder()
 				.setSubject(email)
 				.setIssuedAt(fechaCreacion)

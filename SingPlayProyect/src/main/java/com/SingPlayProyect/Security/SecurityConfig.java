@@ -50,7 +50,7 @@ public class SecurityConfig {
 				.and()
 				.csrf().disable()
 				.authorizeHttpRequests()
-				.requestMatchers("/api/usuario").permitAll()     // ← acceso público
+				//.requestMatchers("/api/**").permitAll()     // ← acceso público
 				.anyRequest()
 				.authenticated()
 				.and()

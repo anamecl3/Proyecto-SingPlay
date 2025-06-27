@@ -17,7 +17,9 @@ public class CorsConfig {
 					.allowedOrigins("http://localhost:4200/")
 					.allowedMethods("*")
 					.exposedHeaders("*");
-				
+						//.allowCredentials(true);
+
+
 				registry.addMapping("/api/**")
 					.allowedOrigins("http://localhost:4200/")
 					.allowedMethods("*")
