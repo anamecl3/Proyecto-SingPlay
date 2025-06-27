@@ -1,0 +1,20 @@
+.footer-link {
+  color: #00ff88;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+  color: #66ffcc;
+  text-decoration: underline;
+}
+
+.footer-icon {
+  color: #00ff88;
+  font-size: 1.4rem;
+  transition: color 0.3s ease;
+}
+
+.footer-icon:hover {
+  color: #66ffcc;
+}

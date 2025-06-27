@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+
+
+    <div class="container mt-4">
+        <h3>Listado de Canciones</h3>
+
+
+        <div class="mb-3">
+            <button class="btn btn-light" (click)="abrirModal('agregar')">
+                <i class="bi bi-plus-circle"></i> Agregar Canción
+            </button>
+        </div>
+        <table class="table table-bordered table-hover mt-3">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Título</th>
+                    <th>Género</th>
+                    <th>Duración</th>
+                    <th>Audio</th>
+                    <th>Álbum</th>
+                    <th>Compositor</th>
+                    <th>Acciones</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let cancion of canciones; let i = index">
+                    <td>{{ (i + 1).toString().padStart(2, '0') }}</td>
+                    <td>{{ cancion.titulo }}</td>
+                    <td>{{ cancion.genero }}</td>
+                    <td class="duracion-cell">
+                        <span class="duracion-content">
+                            <i class="bi bi-clock"></i>
+                            {{ cancion.duracion }}
+                        </span>
+                    </td>
+                    <td>
+                        <audio *ngIf="cancion.urlAudio" controls>
+                            <source [src]="cancion.urlAudio" type="audio/mpeg">
+                            No soporta el audio
+                        </audio>
+                    </td>
+                    <td>{{ cancion.album.titulo }}</td>
+                    <td>{{ cancion.compositor.nombre }}</td>
+
+                    <td class="d-flex flex-row gap-2">
+                        <button class="btn btn-primary btn-sm" (click)="abrirModal('editar', cancion)"
+                            title="Modificar">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm" (click)="eliminarCancion(cancion.idCancion)"
+                            title="Eliminar">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                        <button *ngIf="cancion.activo" class="btn btn-warning btn-sm"
+                            (click)="desactivarCancion(cancion)" title="Desactivar">
+                            <i class="bi bi-x-circle"></i>
+                        </button>
+                        <button *ngIf="!cancion.activo" class="btn btn-success btn-sm" (click)="activarCancion(cancion)"
+                            title="Activar">
+                            <i class="bi bi-check-circle"></i>
+                        </button>
+                    </td>
+
+
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="cancionModal" tabindex="-1" aria-labelledby="cancionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cancionModalLabel">{{ modalModo === 'agregar' ? 'Agregar Canción' :
+                        'Editar Canción' }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label">Título</label>
+                            <input type="text" class="form-control" [(ngModel)]="cancionForm.titulo" name="titulo"
+                                required #tituloCtrl="ngModel">
+                            <div *ngIf="tituloCtrl.invalid && tituloCtrl.touched" class="text-danger">
+                                <small> Debe ingresar un título</small>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Género</label>
+
+                            <ng-select #generoCtrl="ngModel" [items]="generos" bindLabel=""
+                                [(ngModel)]="cancionForm.genero" name="genero" required [searchable]="true">
+                            </ng-select>
+                            <div *ngIf="generoCtrl.invalid && generoCtrl.touched" class="text-danger">
+                                <small>Debe seleccionar un género</small>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Duración (Formato hh:mm:ss)</label>
+                            <input type="time" class="form-control" [(ngModel)]="cancionForm.duracion" name="duracion"
+                                required #duracionCtrl="ngModel" step="1">
+
+                            <div *ngIf="duracionCtrl.invalid && duracionCtrl.touched" class="text-danger">
+                                <small>Debe ingresar la duración en formato hh:mm:ss</small>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">URL Audio</label>
+                            <input type="text" class="form-control" [(ngModel)]="cancionForm.urlAudio" name="urlAudio"
+                                pattern="https?://.+" #urlAudio="ngModel" required>
+
+                            <div *ngIf="urlAudio.invalid && urlAudio.touched" class="text-danger">
+                                <small> Debe ser una URL válida que comience con http:// o https://</small>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Álbum</label>
+                            <ng-select #albumCtrl="ngModel" [items]="albums" bindLabel="titulo" bindValue="idAlbum"
+                                [(ngModel)]="idAlbumSeleccionado" name="album" required [searchable]="true">
+                            </ng-select>
+                            <div *ngIf="albumCtrl.invalid && albumCtrl.touched" class="text-danger">
+                                <small> Debe seleccionar un álbum</small>
+
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Compositor</label>
+                            <ng-select #compositorCtrl="ngModel" [items]="compositores" bindLabel="nombre"
+                                bindValue="idCompositor" [(ngModel)]="idCompositorSeleccionado" name="compositor"
+                                required [searchable]="true">
+                            </ng-select>
+                            <div *ngIf="compositorCtrl.invalid && compositorCtrl.touched" class="text-danger">
+                                <small> Debe seleccionar un compositor</small>
+                            </div>
+                        </div>
+
+
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" (click)="guardarCancion()">Guardar</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+
+
+</html>

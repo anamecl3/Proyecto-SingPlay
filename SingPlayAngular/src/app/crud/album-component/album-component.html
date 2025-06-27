@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <div class="container mt-4">
+        <h2 class="text-success">Lista de Albunes</h2>
+        <div class="row">
+            <div *ngFor="let album of albums" class="col-md-4 mb-4">
+                <img [src]="album.imagenUrl" class="card-img-top" alt="">
+                <div class="card-body">
+                    <h5 class="card-title"> {{ album.titulo}}</h5>
+                    <p class="card-text"> {{ album.fechaLanzamiento}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+</body>
+
+</html>
